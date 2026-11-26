@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "UIVerdict",
+  "type": "object",
+  "required": ["verdict", "requirements_covered", "states_validated", "findings", "timestamp"],
+  "properties": {
+    "verdict": {
+      "type": "string",
+      "enum": ["APPROVE", "PUSHBACK"]
+    },
+    "requirements_covered": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "states_validated": {
+      "type": "object",
+      "required": ["normal", "empty", "loading", "error"],
+      "properties": {
+        "normal": { "type": "boolean" },
+        "empty": { "type": "boolean" },
+        "loading": { "type": "boolean" },
+        "error": { "type": "boolean" }
+      }
+    },
+    "accessibility_passed": {
+      "type": "boolean"
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["severity", "screen", "description"],
+        "properties": {
+          "severity": { "type": "string", "enum": ["BLOCKER", "HIGH", "MEDIUM", "LOW"] },
+          "screen": { "type": "string" },
+          "description": { "type": "string" },
+          "suggested_fix": { "type": "string" }
+        }
+      }
+    },
+    "sample_verification": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "result"],
+        "properties": {
+          "id": { "type": "string" },
+          "result": { "type": "string", "enum": ["COVERED", "PARTIAL", "MISSING"] },
+          "spec_ref": { "type": "string" },
+          "evidence": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "timestamp": { "type": "string" }
+  }
+}

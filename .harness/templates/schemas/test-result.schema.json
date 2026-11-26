@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SDLCTestResult",
+  "type": "object",
+  "required": ["run_id", "overall_status", "summary", "commands", "results"],
+  "properties": {
+    "run_id": { "type": "string" },
+    "overall_status": {
+      "type": "string",
+      "enum": ["PASS", "ALL_PASSED", "FAIL", "FAILURES_DETECTED", "EXECUTION_BLOCKED"]
+    },
+    "summary": {
+      "type": "object",
+      "required": ["total", "passed", "failed", "blocked", "not_run"],
+      "properties": {
+        "total": { "type": "integer", "minimum": 0 },
+        "passed": { "type": "integer", "minimum": 0 },
+        "failed": { "type": "integer", "minimum": 0 },
+        "blocked": { "type": "integer", "minimum": 0 },
+        "not_run": { "type": "integer", "minimum": 0 },
+        "duration_seconds": { "type": "number", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "commands": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["command", "exit_code"],
+        "properties": {
+          "command": { "type": "string" },
+          "exit_code": { "type": "integer" },
+          "duration_seconds": { "type": "number" },
+          "stdout_summary": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["test_id", "status"],
+        "properties": {
+          "test_id": { "type": "string" },
+          "name": { "type": "string" },
+          "status": {
+            "type": "string",
+            "enum": ["PASS", "FAIL", "BLOCKED", "NOT_RUN"]
+          },
+          "duration_seconds": { "type": "number" },
+          "error_message": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

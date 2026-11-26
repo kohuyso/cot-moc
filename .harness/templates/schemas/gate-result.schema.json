@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SDLCGateResult",
+  "type": "object",
+  "required": ["run_id", "outcomes"],
+  "properties": {
+    "run_id": { "type": "string" },
+    "evaluated_at": { "type": "string" },
+    "outcomes": {
+      "type": "object",
+      "additionalProperties": { "type": "boolean" }
+    },
+    "failures": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": false
+}

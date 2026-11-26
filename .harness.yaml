@@ -1,0 +1,39 @@
+{
+  "project_root": ".",
+  "workspace": ".",
+  "components": {
+    "backend": {
+      "path": "backend",
+      "commands": {
+        "test": ["pytest"],
+        "lint": ["python", "-m", "compileall", "."]
+      }
+    },
+    "mobile": {
+      "path": "mobile",
+      "commands": {
+        "test": ["npm", "test"],
+        "typecheck": ["npm", "run", "typecheck"],
+        "lint": ["npm", "run", "lint"]
+      }
+    }
+  },
+  "quality_gates": ["backend:test", "mobile:test", "mobile:typecheck"],
+  "has_ui": true,
+  "require_security_review": true,
+  "require_test_review": true,
+  "require_tech_review": true,
+  "require_test_design": true,
+  "require_harness_review": true,
+  "reviewers": {
+    "default": ["claude", "-p", "--model", "sonnet", "--dangerously-skip-permissions"]
+  },
+  "review_timeout": 1800,
+  "requirement_sources": {
+    "paths": ["docs/URD.md"],
+    "id_pattern": "REQ-[0-9]{3}"
+  },
+  "budgets": {
+    "max_rejection_streak": 5
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit|NotebookEdit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"C:\\Users\\JustHuy\\AppData\\Local\\Programs\\Python\\Python311\\python.exe\" -m sdlc_harness.hook_guard --project \"C:\\Users\\JustHuy\\Personal\\cot-moc\""
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"C:\\Users\\JustHuy\\AppData\\Local\\Programs\\Python\\Python311\\python.exe\" -I \"C:\\Users\\JustHuy\\Personal\\cot-moc\\.claude\\hooks\\phase_metrics.py\" hook"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"C:\\Users\\JustHuy\\AppData\\Local\\Programs\\Python\\Python311\\python.exe\" -I \"C:\\Users\\JustHuy\\Personal\\cot-moc\\.claude\\hooks\\phase_metrics.py\" hook"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"C:\\Users\\JustHuy\\AppData\\Local\\Programs\\Python\\Python311\\python.exe\" -I \"C:\\Users\\JustHuy\\Personal\\cot-moc\\.claude\\hooks\\phase_metrics.py\" hook"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"C:\\Users\\JustHuy\\AppData\\Local\\Programs\\Python\\Python311\\python.exe\" -I \"C:\\Users\\JustHuy\\Personal\\cot-moc\\.claude\\hooks\\phase_metrics.py\" hook"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"C:\\Users\\JustHuy\\AppData\\Local\\Programs\\Python\\Python311\\python.exe\" -I \"C:\\Users\\JustHuy\\Personal\\cot-moc\\.claude\\hooks\\phase_metrics.py\" hook"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"C:\\Users\\JustHuy\\AppData\\Local\\Programs\\Python\\Python311\\python.exe\" -I \"C:\\Users\\JustHuy\\Personal\\cot-moc\\.claude\\hooks\\phase_metrics.py\" hook"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SDLCDesignVerdict",
+  "type": "object",
+  "required": ["reviewer_role", "verdict", "round", "api_coverage_verified", "db_coverage_verified", "findings"],
+  "properties": {
+    "reviewer_role": {
+      "type": "string"
+    },
+    "verdict": {
+      "type": "string",
+      "enum": ["APPROVE", "PUSHBACK", "NEEDS_REVISION"]
+    },
+    "round": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "api_coverage_verified": {
+      "type": "boolean"
+    },
+    "db_coverage_verified": {
+      "type": "boolean"
+    },
+    "endpoints_reviewed": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "tables_reviewed": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["severity", "category", "component", "description"],
+        "properties": {
+          "severity": {
+            "type": "string",
+            "enum": ["BLOCKER", "HIGH", "MEDIUM", "LOW", "INFO"]
+          },
+          "category": { "type": "string" },
+          "component": { "type": "string" },
+          "target_file": { "type": "string" },
+          "line_range": { "type": "string" },
+          "evidence_ref": { "type": "string" },
+          "description": { "type": "string" },
+          "remediation": { "type": "string" }
+        }
+      }
+    },
+    "recommendation_for_human": {
+      "type": "string"
+    },
+    "sample_verification": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "result"],
+        "properties": {
+          "id": { "type": "string" },
+          "result": { "type": "string", "enum": ["COVERED", "PARTIAL", "MISSING"] },
+          "file": { "type": "string" },
+          "line": { "type": "integer", "minimum": 1 },
+          "quote": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,271 @@
+openapi: 3.1.0
+info:
+  title: Enterprise Solution Architecture Core API
+  version: 1.0.0
+  description: >-
+    Chuẩn hóa giao diện lập trình ứng dụng (API Contracts) cấp Enterprise theo chuẩn
+    OpenAPI Specification 3.1, phục vụ tích hợp nội bộ và các dịch vụ đối tác.
+servers:
+  - url: https://api.example.com/v1
+    description: Production Gateway
+  - url: https://staging-api.example.com/v1
+    description: Staging Environment
+
+paths:
+  /health:
+    get:
+      summary: Health check endpoint
+      description: Endpoint kiểm tra trạng thái hoạt động của dịch vụ (Liveness / Readiness probe).
+      operationId: checkHealth
+      responses:
+        '200':
+          description: Dịch vụ hoạt động bình thường
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+        '500':
+          description: Lỗi máy chủ nội bộ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /resources:
+    get:
+      summary: Danh sách tài nguyên nghiệp vụ
+      description: Truy vấn danh sách tài nguyên nghiệp vụ có phân trang và lọc dữ liệu.
+      operationId: listResources
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+        - name: page_size
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+      responses:
+        '200':
+          description: Lấy danh sách thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceListResponse'
+        '401':
+          description: Chưa xác thực danh tính
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Không đủ quyền truy cập tài nguyên
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Lỗi máy chủ nội bộ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    post:
+      summary: Tạo mới tài nguyên nghiệp vụ
+      description: Tạo mới một thực thể nghiệp vụ với cơ chế chống trùng lặp qua Idempotency-Key.
+      operationId: createResource
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: true
+          description: Khóa định danh duy nhất (UUID v4) ngăn ngừa tạo trùng lặp giao dịch
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateResourceRequest'
+      responses:
+        '200':
+          description: Tạo mới tài nguyên thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceItem'
+        '400':
+          description: Dữ liệu đầu vào không hợp lệ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Chưa xác thực danh tính
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Không đủ quyền truy cập
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Xung đột tài nguyên hoặc request đang được xử lý đồng thời
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Lỗi hệ thống nội bộ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    HealthResponse:
+      type: object
+      required:
+        - status
+        - timestamp
+      properties:
+        status:
+          type: string
+          example: UP
+        timestamp:
+          type: string
+          format: date-time
+
+    CreateResourceRequest:
+      type: object
+      required:
+        - name
+        - code
+        - amount
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+          example: "Giao dịch thanh toán mẫu"
+        code:
+          type: string
+          pattern: "^[A-Z0-9_-]{3,50}$"
+          example: "TXN-20261111-001"
+        amount:
+          type: number
+          minimum: 0.01
+          example: 150000.00
+        description:
+          type: string
+          maxLength: 1000
+
+    ResourceItem:
+      type: object
+      required:
+        - id
+        - name
+        - code
+        - amount
+        - status
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        code:
+          type: string
+        amount:
+          type: number
+        status:
+          type: string
+          enum: [PENDING, COMPLETED, FAILED, CANCELLED]
+        created_at:
+          type: string
+          format: date-time
+
+    ResourceListResponse:
+      type: object
+      required:
+        - items
+        - total
+        - page
+        - page_size
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceItem'
+        total:
+          type: integer
+          example: 100
+        page:
+          type: integer
+          example: 1
+        page_size:
+          type: integer
+          example: 20
+
+    ErrorDetail:
+      type: object
+      required:
+        - field
+        - issue
+      properties:
+        field:
+          type: string
+          example: "amount"
+        issue:
+          type: string
+          example: "Giá trị amount phải lớn hơn 0"
+
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+        - request_id
+        - timestamp
+      properties:
+        code:
+          type: string
+          description: Mã lỗi chuẩn hóa theo quy ước ERR-xx-xxx
+          example: "ERR-00-400"
+        message:
+          type: string
+          description: Thông điệp lỗi người dùng thân thiện
+          example: "Dữ liệu đầu vào không hợp lệ"
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorDetail'
+        request_id:
+          type: string
+          format: uuid
+          example: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        timestamp:
+          type: string
+          format: date-time
+
+security:
+  - BearerAuth: []

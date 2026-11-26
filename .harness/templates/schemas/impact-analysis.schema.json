@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SDLCImpactAnalysis",
+  "type": "object",
+  "required": [
+    "run_id",
+    "base_commit",
+    "target_branch",
+    "files_analyzed",
+    "affected_modules",
+    "confidence_score"
+  ],
+  "properties": {
+    "run_id": {
+      "type": "string"
+    },
+    "base_commit": {
+      "type": "string"
+    },
+    "target_branch": {
+      "type": "string"
+    },
+    "files_analyzed": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "affected_modules": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "confidence_score": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "markdown_digest": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

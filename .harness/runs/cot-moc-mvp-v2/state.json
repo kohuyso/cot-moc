@@ -1,0 +1,123 @@
+{
+  "run_id": "cot-moc-mvp-v2",
+  "mode": "new_build",
+  "phase": "ESCALATION_REQUIRED",
+  "review_rounds": {
+    "ba_sa": 2,
+    "dev_review": 0,
+    "test_qa": 0,
+    "security_review": 0,
+    "BA_SA": 2
+  },
+  "created_at": "2026-11-25T07:23:59.419446+00:00",
+  "updated_at": "2026-11-25T07:38:42.265760+00:00",
+  "metadata": {},
+  "escalation_context": {
+    "loop": "BA_SA",
+    "origin_phase": "SA_REVIEW",
+    "target_phase_on_accept": "SA_DESIGN",
+    "extensions_granted": 0
+  },
+  "config_digest": "ee06d51781879a846253c0f4f96e68c32633269fb4559ddf9103e0a7ab6390ee",
+  "config_snapshot": {
+    "project_root": ".",
+    "workspace": ".",
+    "components": {
+      "backend": {
+        "path": "backend",
+        "commands": {
+          "test": [
+            "pytest"
+          ],
+          "lint": [
+            "python",
+            "-m",
+            "compileall",
+            "."
+          ]
+        }
+      },
+      "mobile": {
+        "path": "mobile",
+        "commands": {
+          "test": [
+            "npm",
+            "test"
+          ],
+          "typecheck": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "lint": [
+            "npm",
+            "run",
+            "lint"
+          ]
+        }
+      }
+    },
+    "quality_gates": [
+      "backend:test",
+      "mobile:test",
+      "mobile:typecheck"
+    ],
+    "has_ui": true,
+    "require_security_review": true,
+    "require_test_review": true,
+    "require_tech_review": true,
+    "require_test_design": true,
+    "require_harness_review": true,
+    "reviewers": {
+      "default": [
+        "claude",
+        "-p",
+        "--model",
+        "claude-opus-5-5"
+      ]
+    },
+    "review_timeout": 1800,
+    "requirement_sources": {
+      "paths": [
+        "docs/URD.md"
+      ],
+      "id_pattern": "REQ-[0-9]{3}"
+    },
+    "budgets": {
+      "max_rejection_streak": 5
+    }
+  },
+  "source_digests": {
+    "docs/URD.md": "1d48dd585ccf6989791764c24bc11a50274ba8fbb7e392154ece8f5d520d5dde"
+  },
+  "harness_version": "0.15.3",
+  "harness_build": "6f17f1a2e959f723534c88cd23ed421f827fe87f1dcaacdeee8dc175f844be10",
+  "previous_phase": "SA_REVIEW",
+  "artifact_digests": {
+    "artifacts/data-dictionary.md": "01d4db9a8a51d8a30af5d0d06c36912d1c4730bbc68a4bc5de873b1098fce6c6",
+    "artifacts/fsd.md": "19db7dd9b36458c54db00b7a83d37052b337d9e3556cba2954f33eed5e3f15ac",
+    "artifacts/intake.md": "f3a683df981b6084f46b1d421d8a5b95329f40f56ea83d427115313f282d29a1",
+    "artifacts/integration-matrix.md": "d67cdb304703e0041826e93ae42876519f13cff10d37f376ab5807019cc2552b",
+    "artifacts/requirement-analysis.md": "6738cf8fd603617f93d42c43dcd88884caebc15f37009cdc196b9d23e7c02ee2",
+    "artifacts/requirement.json": "5c02c1d0eaa6cf2c72487301cc7b9e6cd6a762658619dfe5370a46f1d6c89d68",
+    "artifacts/rtm.md": "4ae96e0ab8ebc8248204bd085ca8c6a338795914a5cf246ece6cad1dee00554d",
+    "artifacts/srs.md": "6738cf8fd603617f93d42c43dcd88884caebc15f37009cdc196b9d23e7c02ee2",
+    "artifacts/architecture-review.md": "5f57e0277c5a2a3c5c5c15aaadbcc9f1c48376b3d365102a374316cc7e27887e",
+    "artifacts/sa-review.json": "01e1f10e43d314d52c85eb4836481bcb25c321a01fdca7739ea42166ce6c0b91",
+    "artifacts/escalation-report.md": "a125a6ce71db59ae708d1d604dd1f7a6b62ab759d55a4f37a140c0bf8800db18"
+  },
+  "review_history": [],
+  "holds": [],
+  "baseline": [],
+  "work_items": null,
+  "track": null,
+  "base_commit": null,
+  "artifact_revisions": {},
+  "last_human_decision": null,
+  "lineage": {
+    "parent_run": "cot-moc-mvp",
+    "parent_event_hash": "c7ec0d37d3e8a0c2f3e7449b76ea452407ad015bdc16896af924dc473ebdb9c0",
+    "parent_phase": "BA_DRAFT",
+    "forked_at_phase": "BA_DRAFT"
+  }
+}

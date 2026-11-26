@@ -1,0 +1,23 @@
+{
+  "run_id": "cot-moc-mvp-v5",
+  "loop": "BA_SA",
+  "trigger_reason": "BA_SA review loop ceiling exhausted at round 3 with 10 remaining findings (2 HIGH, 6 MEDIUM, 2 LOW) in sa-review.json.",
+  "findings": [
+    "F-001 [HIGH] Offline SMS template and EmergencyCard attachment undefined in srs.md FR-006/BR-006",
+    "F-002 [HIGH] Deferred offline SOS queued last in offline sync order in integration-matrix.md §3.1",
+    "F-003 [MEDIUM] Max 1 ACTIVE SosSession violation and timer-attach alert behaviour undefined",
+    "F-004 [MEDIUM] Offline SOS resolve/revoke and 409 ERR_TIMER_ALREADY_EXPIRED deferred check-in handling undefined",
+    "F-005 [MEDIUM] Gallery photo GPS source inconsistency and missing is_stale_location age threshold",
+    "F-006 [MEDIUM] Web tracking 50-point trail merge rule and missing triggered_offline/resolved_offline columns",
+    "F-007 [MEDIUM] Client-side Nominatim 1 req/s policy compliance and fallback",
+    "F-008 [MEDIUM] Stale cot-moc-mvp-v3 Run ID headers across artifacts",
+    "F-009 [LOW] FR-001 phone regex 10 vs 11 digits and foreign E.164 contact handling",
+    "F-010 [LOW] Trip pause-gap distance rule and server recomputation policy"
+  ],
+  "options": [
+    "GRANT_EXTENSION: Return to BA_REWORK to resolve all 10 findings before SA_DESIGN",
+    "ACCEPT_RISK: Advance to SA_DESIGN and address remaining gaps in architecture design",
+    "REJECT_AND_CLOSE: Terminate the run"
+  ],
+  "recommended_action": "GRANT_EXTENSION"
+}

@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SDLCTestVerdict",
+  "type": "object",
+  "required": ["reviewer_role", "verdict", "round", "requirements_coverage_verified", "negative_cases_verified", "boundary_cases_verified", "findings"],
+  "properties": {
+    "reviewer_role": {
+      "type": "string"
+    },
+    "verdict": {
+      "type": "string",
+      "enum": ["APPROVE", "PUSHBACK", "NEEDS_REVISION"]
+    },
+    "round": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "requirements_coverage_verified": {
+      "type": "boolean"
+    },
+    "negative_cases_verified": {
+      "type": "boolean"
+    },
+    "boundary_cases_verified": {
+      "type": "boolean"
+    },
+    "total_cases_reviewed": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["severity", "category", "component", "description"],
+        "properties": {
+          "severity": {
+            "type": "string",
+            "enum": ["BLOCKER", "HIGH", "MEDIUM", "LOW", "INFO"]
+          },
+          "category": { "type": "string" },
+          "component": { "type": "string" },
+          "target_file": { "type": "string" },
+          "line_range": { "type": "string" },
+          "evidence_ref": { "type": "string" },
+          "description": { "type": "string" },
+          "remediation": { "type": "string" }
+        }
+      }
+    },
+    "sample_verification": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "result"],
+        "properties": {
+          "id": { "type": "string" },
+          "result": { "type": "string", "enum": ["COVERED", "PARTIAL", "MISSING"] },
+          "test_case_id": { "type": "string" },
+          "evidence": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "recommendation_for_dev": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

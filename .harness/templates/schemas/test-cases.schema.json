@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SDLCTestCases",
+  "type": "object",
+  "required": ["run_id", "test_cases"],
+  "properties": {
+    "run_id": { "type": "string" },
+    "test_cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "requirement_id", "title", "tier", "type", "priority", "expected_result"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^(TC|TEST|tc|test)[-_][A-Za-z0-9_-]+$"
+          },
+          "requirement_id": { "type": "string" },
+          "title": { "type": "string", "minLength": 5 },
+          "tier": {
+            "type": "string",
+            "enum": ["UNIT", "INTEGRATION", "E2E_UI", "SECURITY", "SMOKE", "PERFORMANCE"]
+          },
+          "type": {
+            "type": "string",
+            "enum": ["POSITIVE", "NEGATIVE", "BOUNDARY", "REGRESSION", "SECURITY"]
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["P0", "P1", "P2", "P3"]
+          },
+          "preconditions": { "type": "string" },
+          "steps": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "expected_result": { "type": "string", "minLength": 5 },
+          "automated_test_ref": { "type": "string" },
+          "endpoint": { "type": "string" },
+          "test_data": { "type": ["object", "string", "array"] },
+          "error_code": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

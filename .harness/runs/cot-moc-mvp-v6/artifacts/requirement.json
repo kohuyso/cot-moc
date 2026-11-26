@@ -1,0 +1,805 @@
+{
+  "id": "FR-000",
+  "title": "Cột Mốc Phase 1 MVP — An toàn sinh tồn (SOS) & Nhật ký hành trình",
+  "description": "Đặc tả yêu cầu phần mềm cho ứng dụng di động React Native (offline-first) và FastAPI backend + Web Tracking cho người đi phượt, bao gồm REQ-001 đến REQ-012 trong docs/URD.md.",
+  "priority": "P0",
+  "project_scale": "standard",
+  "fsd_ref": "artifacts/fsd.md",
+  "data_dictionary_ref": "artifacts/data-dictionary.md",
+  "integration_matrix_ref": "artifacts/integration-matrix.md",
+  "rtm_ref": "artifacts/rtm.md",
+  "modules": [
+    {
+      "id": "auth_profile",
+      "name": "Tài khoản & Hồ sơ khẩn cấp",
+      "description": "Đăng ký, đăng nhập/đăng xuất bằng SĐT/email với JWT lưu an toàn trên thiết bị; quản lý tối đa 5 liên hệ khẩn cấp; quản lý thẻ thông tin y tế và phương tiện.",
+      "source_ref": "docs/URD.md §1 (REQ-001, REQ-002, REQ-003)"
+    },
+    {
+      "id": "sos_safety",
+      "name": "An toàn & Cảnh báo khẩn cấp (Core SOS)",
+      "description": "Nút SOS giữ 3s + đếm ngược hủy 5s; cảnh báo đa kênh SMS Gateway bất đồng bộ và SMS fallback offline; trang web theo dõi trực tiếp theo token tạm thời; kết thúc SOS/thu hồi link/heartbeat; hẹn giờ Dead Man's Switch; lưu vết hành trình nền tối ưu pin.",
+      "source_ref": "docs/URD.md §2 (REQ-004, REQ-005, REQ-006, REQ-007, REQ-008)"
+    },
+    {
+      "id": "trip_journal",
+      "name": "Nhật ký hành trình & Chia sẻ",
+      "description": "Quản lý chuyến đi (Bắt đầu/Tạm dừng/Kết thúc, lịch sử); check-in ảnh + ghi chú với hàng đợi offline; gắn watermark địa điểm/độ cao/thời gian; xuất ảnh tổng kết 9:16 hoặc 1:1 có che 1-2 km đầu/cuối.",
+      "source_ref": "docs/URD.md §3 (REQ-009, REQ-010, REQ-011, REQ-012)"
+    }
+  ],
+  "acceptance_criteria": [
+    {
+      "given": "Người dùng mới chưa có tài khoản trên ứng dụng Cột Mốc",
+      "when": "Người dùng hoàn tất đăng ký, thiết lập danh bạ khẩn cấp, thẻ y tế và kích hoạt SOS hoặc tạo chuyến đi check-in",
+      "then": "Toàn bộ luồng REQ-001 đến REQ-012 hoạt động đồng bộ giữa Mobile App (offline-first) và FastAPI Backend + Web Tracking"
+    }
+  ],
+  "out_of_scope": [
+    {
+      "id": "OOS-001",
+      "description": "REQ-013: Tải gói bản đồ và dữ liệu cứu hộ Offline theo cung đường (Phase 2).",
+      "confirmed_by_user": true,
+      "reason": "Thuộc Phạm vi Phase 2 trong docs/URD.md; người dùng xác nhận chỉ triển khai REQ-001..REQ-012 cho cot-moc-mvp-v5."
+    },
+    {
+      "id": "OOS-002",
+      "description": "REQ-014: Danh bạ cứu hộ & sửa xe dọc tuyến Offline kèm xác nhận cộng đồng (Phase 2).",
+      "confirmed_by_user": true,
+      "reason": "Thuộc Phạm vi Phase 2 trong docs/URD.md; người dùng xác nhận loại trừ khỏi MVP."
+    },
+    {
+      "id": "OOS-003",
+      "description": "REQ-015: Bản đồ cây xăng & điểm nghỉ với cảnh báo đoạn đường dài không có cây xăng (Phase 2).",
+      "confirmed_by_user": true,
+      "reason": "Thuộc Phạm vi Phase 2 trong docs/URD.md; người dùng xác nhận loại trừ khỏi MVP."
+    },
+    {
+      "id": "OOS-004",
+      "description": "REQ-016: Tự động tô màu tỉnh thành Offline theo ranh giới hành chính (Phase 2).",
+      "confirmed_by_user": true,
+      "reason": "Thuộc Phạm vi Phase 2 trong docs/URD.md; người dùng xác nhận loại trừ khỏi MVP."
+    },
+    {
+      "id": "OOS-005",
+      "description": "REQ-017: Bản đồ kỷ niệm theo tỉnh thành đã tô màu (Phase 2).",
+      "confirmed_by_user": true,
+      "reason": "Thuộc Phạm vi Phase 2 trong docs/URD.md; người dùng xác nhận loại trừ khỏi MVP."
+    },
+    {
+      "id": "OOS-006",
+      "description": "REQ-018: Profile thống kê thành tích (tổng km, x/63 tỉnh, đỉnh đèo cao nhất, tổng ngày trên đường) (Phase 2).",
+      "confirmed_by_user": true,
+      "reason": "Thuộc Phạm vi Phase 2 trong docs/URD.md; người dùng xác nhận loại trừ khỏi MVP."
+    }
+  ],
+  "source_exclusions": [
+    {
+      "id": "REQ-013",
+      "reason": "Thuộc Phase 2 (Mở rộng sau MVP) theo docs/URD.md và request.md; đã được người dùng xác nhận loại trừ."
+    },
+    {
+      "id": "REQ-014",
+      "reason": "Thuộc Phase 2 (Mở rộng sau MVP) theo docs/URD.md và request.md; đã được người dùng xác nhận loại trừ."
+    },
+    {
+      "id": "REQ-015",
+      "reason": "Thuộc Phase 2 (Mở rộng sau MVP) theo docs/URD.md và request.md; đã được người dùng xác nhận loại trừ."
+    },
+    {
+      "id": "REQ-016",
+      "reason": "Thuộc Phase 2 (Mở rộng sau MVP) theo docs/URD.md và request.md; đã được người dùng xác nhận loại trừ."
+    },
+    {
+      "id": "REQ-017",
+      "reason": "Thuộc Phase 2 (Mở rộng sau MVP) theo docs/URD.md và request.md; đã được người dùng xác nhận loại trừ."
+    },
+    {
+      "id": "REQ-018",
+      "reason": "Thuộc Phase 2 (Mở rộng sau MVP) theo docs/URD.md và request.md; đã được người dùng xác nhận loại trừ."
+    }
+  ],
+  "open_questions": [
+    {
+      "id": "OQ-001",
+      "question": "Cơ chế xác thực cho Đăng ký / Đăng nhập (REQ-001) ở Phase 1 MVP là mật khẩu (SĐT/Email + Password + JWT) hay OTP?",
+      "owner": "Product Owner / User",
+      "status": "RESOLVED",
+      "resolution": "Người dùng xác nhận dùng Mật khẩu (SĐT hoặc Email + Password) với JWT lưu trong SecureStore, không cần SMS OTP gateway ở MVP."
+    },
+    {
+      "id": "OQ-002",
+      "question": "Hành vi SMS Fallback khi mất mạng (REQ-005) và kênh thông báo Online tới người thân ở MVP?",
+      "owner": "Product Owner / User",
+      "status": "RESOLVED",
+      "resolution": "Offline mở expo-sms composer có sẵn nội dung + danh sách SĐT (iOS & Android); Online dùng SMSGatewayAdapter bất đồng bộ tới SĐT liên hệ (Push notification hoãn sang Phase 2 vì người thân không cài app)."
+    },
+    {
+      "id": "OQ-003",
+      "question": "Thời hạn hiệu lực (TTL) của mã phiên URL theo dõi trực tiếp cho người thân (REQ-006)?",
+      "owner": "Product Owner / User",
+      "status": "RESOLVED",
+      "resolution": "Người dùng xác nhận Token hết hạn sau 24 giờ kể từ khi kết thúc SOS, hoặc thu hồi ngay khi người dùng tắt chia sẻ."
+    },
+    {
+      "id": "OQ-004",
+      "question": "Trang Web theo dõi trực tiếp công khai (/track/{token}) có hiển thị thẻ y tế & biển số xe khi SOS ACTIVE không?",
+      "owner": "Product Owner / User",
+      "status": "RESOLVED",
+      "resolution": "Người dùng xác nhận hiển thị thẻ y tế & biển số xe trên trang Web Tracking CHỈ KHI trạng thái SOS là ACTIVE (ẩn hoàn toàn khi RESOLVED)."
+    }
+  ],
+  "assumptions": [
+    {
+      "id": "ASM-001",
+      "description": "Đăng ký/đăng nhập dùng SĐT chuẩn E.164 (hoặc 0xxxxxxxxx Việt Nam chuẩn hóa thành +84) hoặc Email + mật khẩu 8..128 ký tự gồm ít nhất 1 chữ cái và 1 chữ số, cấp JWT lưu SecureStore.",
+      "confirmed_by_user": true
+    },
+    {
+      "id": "ASM-002",
+      "description": "Khi Offline phát SOS, ứng dụng mở expo-sms composer điền sẵn danh sách SĐT người thân và nội dung chuẩn; khi có mạng lại sẽ đồng bộ bù POST /api/v1/sos/trigger.",
+      "confirmed_by_user": true
+    },
+    {
+      "id": "ASM-003",
+      "description": "URL theo dõi trực tiếp dùng token ngẫu nhiên 32-byte URL-safe, có hiệu lực 24 giờ sau khi SOS kết thúc (tối đa 72h nếu chưa resolve) hoặc bị thu hồi tức thì.",
+      "confirmed_by_user": true
+    },
+    {
+      "id": "ASM-004",
+      "description": "Safety Timer tối đa 72 giờ, nhắc trước 10 phút (bỏ qua nếu deadline <= 10 phút), gia hạn +30 hoặc +60 phút; scheduler server quét và phát cảnh báo quá hạn trong vòng <= 60 giây.",
+      "confirmed_by_user": true
+    },
+    {
+      "id": "ASM-005",
+      "description": "Breadcrumb lưu vết nền mặc định 15 giây khi di chuyển (speed >= 2 km/h) và 120 giây khi đứng yên; Web Tracking poll mỗi 15 giây và hiển thị tối đa 50 điểm gần nhất.",
+      "confirmed_by_user": true
+    },
+    {
+      "id": "ASM-006",
+      "description": "Export Poster mặc định mức che riêng tư rời rạc {0, 1, 2} km đầu/cuối và vẽ cung đường polyline trên nền bản đồ tối giản để chạy 100% offline.",
+      "confirmed_by_user": true
+    },
+    {
+      "id": "ASM-007",
+      "description": "SMSGatewayAdapter dùng giao thức REST SMS Việt Nam (eSMS/SpeedSMS) ở production và MockSMSGatewayAdapter trong dev/test; Push notification tới người thân hoãn sang Phase 2.",
+      "confirmed_by_user": true
+    }
+  ],
+  "requirements": [
+    {
+      "id": "FR-001",
+      "title": "Đăng ký tài khoản người dùng bằng SĐT hoặc Email",
+      "description": "Hệ thống SHALL cho phép người dùng mới đăng ký tài khoản bằng số điện thoại hoặc email kết hợp mật khẩu, kiểm tra tính duy nhất và lưu phiên đăng nhập an toàn.",
+      "priority": "P0",
+      "source_refs": ["REQ-001"],
+      "main_flow": [
+        "1. Người dùng nhập SĐT (định dạng +84/0xxx) hoặc Email, mật khẩu (8..128 ký tự, gồm >= 1 chữ cái và >= 1 chữ số) và họ tên trên màn hình Đăng ký.",
+        "2. Ứng dụng kiểm tra định dạng đầu vào cục bộ và gửi POST /api/v1/auth/register tới FastAPI backend.",
+        "3. Backend băm mật khẩu bằng bcrypt/argon2, tạo bản ghi tài khoản mới, sinh cặp JWT access_token (TTL 15 phút) và refresh_token (TTL 30 ngày, lưu SHA-256 hash vào tbl_refresh_tokens).",
+        "4. Ứng dụng lưu token vào SecureStore trên thiết bị và chuyển hướng vào màn hình chính."
+      ],
+      "alternate_flows": [
+        "Người dùng chọn đăng ký bằng Email thay vì SĐT: hệ thống chuẩn hóa email về chữ thường và bỏ qua bước chuẩn hóa mã vùng +84."
+      ],
+      "exception_flows": [
+        "SĐT hoặc Email đã tồn tại: Backend trả HTTP 409 Conflict với mã ERR_AUTH_DUPLICATE_IDENTIFIER; trạng thái giữ nguyên chưa đăng nhập.",
+        "Mật khẩu dưới 8 ký tự hoặc thiếu chữ cái/chữ số: Backend/App trả HTTP 422 Unprocessable Entity với mã ERR_AUTH_WEAK_PASSWORD và giữ nguyên form.",
+        "Mất kết nối mạng khi đăng ký: Ứng dụng giữ nguyên ở màn hình Đăng ký với thông báo ERR_NETWORK_OFFLINE."
+      ],
+      "business_rules": [
+        "BR-001: Mỗi tài khoản bắt buộc có ít nhất 1 định danh (phone hoặc email) duy nhất. SĐT Việt Nam bắt đầu bằng 0 (10 số) chuẩn hóa sang +84. Mật khẩu dài 8..128 ký tự và chứa ít nhất 1 chữ cái và 1 chữ số. Ví dụ: '0912345678' -> '+84912345678'; 'abcdefgh' hoặc 'abc123' bị từ chối."
+      ],
+      "acceptance_criteria": [
+        {
+          "given": "Người dùng chưa có tài khoản nhập SĐT '0912345678' và mật khẩu 'MatKhau123'",
+          "when": "Người dùng bấm nút Đăng ký",
+          "then": "Backend trả HTTP 201 Created, lưu SĐT chuẩn hóa '+84912345678', trả về access_token và refresh_token, và ứng dụng lưu token vào SecureStore"
+        },
+        {
+          "given": "Số điện thoại '+84912345678' đã tồn tại trong hệ thống",
+          "when": "Người dùng gửi yêu cầu đăng ký với SĐT '0912345678'",
+          "then": "Backend từ chối với HTTP 409 Conflict và mã lỗi ERR_AUTH_DUPLICATE_IDENTIFIER"
+        }
+      ]
+    },
+    {
+      "id": "FR-002",
+      "title": "Đăng nhập, đăng xuất và duy trì phiên ngoại tuyến an toàn",
+      "description": "Hệ thống SHALL cho phép người dùng đăng nhập/đăng xuất bằng SĐT hoặc Email và mật khẩu, đồng bộ hồ sơ về máy và duy trì chế độ SOS ngoại tuyến ngay cả khi phiên hết hạn.",
+      "priority": "P0",
+      "source_refs": ["REQ-001"],
+      "main_flow": [
+        "1. Người dùng nhập định danh (SĐT hoặc Email) và mật khẩu trên màn hình Đăng nhập.",
+        "2. Ứng dụng gửi POST /api/v1/auth/login tới FastAPI backend.",
+        "3. Backend xác thực mật khẩu băm, cấp access_token và lưu hash của refresh_token vào tbl_refresh_tokens.",
+        "4. Ứng dụng lưu token vào SecureStore, gọi GET /api/v1/me để đồng bộ hồ sơ cá nhân, thẻ y tế và danh bạ khẩn cấp về SQLite cục bộ."
+      ],
+      "alternate_flows": [
+        "Mở app khi offline với refresh_token <= 30 ngày: Vào thẳng màn hình chính ở chế độ Offline.",
+        "Mở app khi offline với refresh_token > 30 ngày: Vào chế độ Limited Offline-SOS (nút SOS, SMS fallback, thẻ y tế và danh bạ cục bộ vẫn hoạt động; đồng bộ chuyến đi bị khóa tới khi đăng nhập lại online).",
+        "Đăng xuất (POST /api/v1/auth/logout): Thu hồi refresh_token trên server, xóa token khỏi SecureStore và xóa dữ liệu cá nhân trong SQLite."
+      ],
+      "exception_flows": [
+        "Sai mật khẩu hoặc không tìm thấy tài khoản: Backend trả HTTP 401 Unauthorized với mã ERR_AUTH_INVALID_CREDENTIALS; giữ nguyên màn hình Đăng nhập.",
+        "Refresh token hết hạn hoặc bị thu hồi khi đang online: Backend trả HTTP 401 với mã ERR_AUTH_SESSION_EXPIRED; ứng dụng xóa token và đưa về màn hình Đăng nhập."
+      ],
+      "business_rules": [
+        "BR-002: Phiên đăng nhập đầy đủ hợp lệ khi offline nếu refresh_token <= 30 ngày. Nếu > 30 ngày khi offline, mở Limited Offline-SOS Mode để không khóa nút SOS. Ví dụ: ngày 19 (<=30) -> vào app đầy đủ; ngày 31 offline -> vào Limited Offline-SOS Mode."
+      ],
+      "acceptance_criteria": [
+        {
+          "given": "Tài khoản '+84912345678' tồn tại với mật khẩu 'MatKhau123'",
+          "when": "Người dùng đăng nhập đúng thông tin",
+          "then": "Backend trả HTTP 200 OK kèm access_token và refresh_token; ứng dụng lưu vào SecureStore và gọi GET /api/v1/me đồng bộ SQLite"
+        },
+        {
+          "given": "Thiết bị đang offline và refresh_token trong SecureStore đã quá 31 ngày",
+          "when": "Người dùng mở ứng dụng",
+          "then": "Ứng dụng mở Limited Offline-SOS Mode cho phép bấm nút SOS và gửi SMS Fallback tới danh bạ khẩn cấp cục bộ"
+        }
+      ]
+    },
+    {
+      "id": "FR-003",
+      "title": "Quản lý danh bạ người thân khẩn cấp (tối đa 5 liên hệ)",
+      "description": "Hệ thống SHALL cho phép người dùng thêm, sửa, xóa và xem tối đa 5 liên hệ khẩn cấp gồm Tên, SĐT (chuẩn hóa +84) và Mối quan hệ, đồng bộ cả cục bộ và server.",
+      "priority": "P0",
+      "source_refs": ["REQ-002"],
+      "main_flow": [
+        "1. Người dùng mở màn hình Danh bạ khẩn cấp (SCR-AUTH-03) và chọn Thêm liên hệ.",
+        "2. Ứng dụng kiểm tra số lượng liên hệ chưa xóa trong SQLite (< 5), chuẩn hóa SĐT 0xxx -> +84xxx, và nhận Tên (1-100 ký tự), Mối quan hệ (1-50 ký tự).",
+        "3. Ứng dụng lưu bản ghi vào SQLite cục bộ với client_id và sync_status = PENDING, gửi POST /api/v1/contacts nếu có mạng.",
+        "4. Backend kiểm tra giới hạn <= 5 liên hệ và trả HTTP 201 Created (hoặc HTTP 200 OK nếu trùng (user_id, client_id)); ứng dụng cập nhật sync_status = SYNCED."
+      ],
+      "alternate_flows": [
+        "Sửa hoặc xóa liên hệ: PUT /api/v1/contacts/{id} hoặc DELETE /api/v1/contacts/{id} (kèm modal xác nhận xóa trên UI).",
+        "Thao tác khi offline: Thay đổi được lưu SQLite cục bộ với sync_status = PENDING và tự đồng bộ khi có mạng."
+      ],
+      "exception_flows": [
+        "Thêm liên hệ thứ 6 khi đã đủ 5 liên hệ: Chặn ngay với mã ERR_CONTACT_LIMIT_EXCEEDED (HTTP 400 Bad Request trên server); không thêm bản ghi.",
+        "Xung đột đồng bộ trả HTTP 400 ERR_CONTACT_LIMIT_EXCEEDED: Đánh dấu bản ghi cục bộ là FAILED_PERMANENT và thông báo người dùng xóa bớt liên hệ.",
+        "SĐT không đúng định dạng: Từ chối với HTTP 422 Unprocessable Entity và mã ERR_CONTACT_INVALID_PHONE."
+      ],
+      "business_rules": [
+        "BR-003: 0 <= count(active_contacts) <= 5 trên cả SQLite cục bộ và server. SĐT Việt Nam bắt đầu bằng 0 (10 số) chuẩn hóa sang +84. Ví dụ: '0987654321' -> '+84987654321'; đang có 5 liên hệ -> chặn thêm với ERR_CONTACT_LIMIT_EXCEEDED."
+      ],
+      "acceptance_criteria": [
+        {
+          "given": "Người dùng đang có 4 liên hệ khẩn cấp",
+          "when": "Người dùng thêm liên hệ thứ 5 với Tên 'Nguyễn Văn A', SĐT '0987654321', Mối quan hệ 'Anh trai'",
+          "then": "Hệ thống lưu thành công (HTTP 201 Created) với SĐT '+84987654321', tổng số liên hệ là 5"
+        },
+        {
+          "given": "Người dùng đã có đủ 5 liên hệ khẩn cấp (kể cả khi đang offline)",
+          "when": "Người dùng cố gắng thêm liên hệ thứ 6",
+          "then": "Hệ thống từ chối ngay tại thiết bị và trên server với HTTP 400 Bad Request và mã lỗi ERR_CONTACT_LIMIT_EXCEEDED"
+        }
+      ]
+    },
+    {
+      "id": "FR-004",
+      "title": "Quản lý thẻ thông tin y tế và phương tiện cá nhân",
+      "description": "Hệ thống SHALL cho phép người dùng lưu và cập nhật thẻ thông tin y tế (nhóm máu, dị ứng thuốc, bệnh nền) và thông tin xe (biển số, loại xe) để tự động đính kèm khi phát SOS.",
+      "priority": "P0",
+      "source_refs": ["REQ-003"],
+      "main_flow": [
+        "1. Người dùng mở màn hình Thẻ Y tế & Xe (SCR-AUTH-02).",
+        "2. Người dùng chọn nhóm máu, nhập dị ứng thuốc, bệnh nền, biển số xe và loại xe.",
+        "3. Người dùng bấm Lưu; ứng dụng lưu vào SQLite cục bộ với sync_status = PENDING và gửi PUT /api/v1/profile/emergency-card lên FastAPI backend.",
+        "4. Backend xác thực dữ liệu và trả HTTP 200 OK; ứng dụng cập nhật sync_status = SYNCED."
+      ],
+      "alternate_flows": [
+        "Cập nhật khi offline: Dữ liệu lưu SQLite với sync_status = PENDING để sẵn sàng đính kèm SMS SOS ngay cả khi chưa đồng bộ lên server."
+      ],
+      "exception_flows": [
+        "Giá trị nhóm máu nằm ngoài tập cho phép: Backend trả HTTP 422 Unprocessable Entity với mã ERR_PROFILE_INVALID_BLOOD_TYPE; giữ nguyên dữ liệu form.",
+        "Độ dài trường dị ứng/bệnh nền vượt quá 500 ký tự: Hệ thống trả HTTP 422 với mã ERR_PROFILE_FIELD_TOO_LONG."
+      ],
+      "business_rules": [
+        "BR-004: Nhóm máu hợp lệ thuộc tập {A+, A-, B+, B-, AB+, AB-, O+, O-, UNKNOWN}. Biển số xe tối đa 20 ký tự. Ví dụ: blood_type='O+', vehicle_plate='29A1-12345' -> hợp lệ."
+      ],
+      "acceptance_criteria": [
+        {
+          "given": "Người dùng đã đăng nhập",
+          "when": "Người dùng cập nhật nhóm máu 'O+', dị ứng 'Penicillin', biển số '29A1-12345', loại xe 'Honda Winner X'",
+          "then": "Hệ thống lưu thành công (HTTP 200 OK) cả ở server và SQLite cục bộ để đính kèm khi phát SOS"
+        },
+        {
+          "given": "Người dùng gửi nhóm máu 'XYZ' không hợp lệ",
+          "when": "Gọi PUT /api/v1/profile/emergency-card",
+          "then": "Backend từ chối với HTTP 422 Unprocessable Entity và mã ERR_PROFILE_INVALID_BLOOD_TYPE"
+        }
+      ]
+    },
+    {
+      "id": "FR-005",
+      "title": "Kích hoạt nút SOS khẩn cấp 1 chạm (giữ 3s + đếm ngược hủy 5s)",
+      "description": "Hệ thống SHALL cung cấp nút SOS nổi bật trên màn hình chính yêu cầu bấm giữ liên tục 3 giây để kích hoạt, sau đó mở cửa sổ đếm ngược 5 giây cho phép hủy trước khi phát cảnh báo.",
+      "priority": "P0",
+      "source_refs": ["REQ-004"],
+      "main_flow": [
+        "1. Người dùng bấm và giữ nút SOS trên màn hình chính liên tục đủ 3.0 giây.",
+        "2. Ứng dụng rung phản hồi (haptic), chuyển sang trạng thái COUNTDOWN và đếm ngược 5 giây (từ 5 về 0) kèm nút 'HỦY SOS' nổi bật.",
+        "3. Nếu hết 5 giây mà người dùng không bấm hủy, ứng dụng chuyển trạng thái SOS sang ACTIVE và kích hoạt luồng phát cảnh báo FR-006."
+      ],
+      "alternate_flows": [
+        "Người dùng nhả tay trước 3.0 giây: Đặt lại tiến trình giữ nút về 0, trạng thái giữ nguyên IDLE.",
+        "Người dùng bấm nút 'HỦY SOS' trong khoảng đếm ngược 5 giây: Hủy bỏ kích hoạt SOS, ghi log cục bộ SOS_CANCELLED_IN_COUNTDOWN và quay lại IDLE."
+      ],
+      "exception_flows": [
+        "GPS chưa khóa được tọa độ mới nhưng có tọa độ cũ: Phát SOS với tọa độ cuối cùng và is_stale_location = true.",
+        "Thiết bị chưa từng có tọa độ GPS nào (máy mới cài/từ chối quyền): Vẫn cho phép phát SOS với latitude = null, longitude = null và location_unavailable = true.",
+        "Người dùng chưa khai báo liên hệ khẩn cấp nào: Khi online vẫn gửi SOS lên server (tạo link web) và hiển thị cảnh báo."
+      ],
+      "business_rules": [
+        "BR-005: Ngưỡng giữ nút hold_duration >= 3000 ms; đếm ngược cancel_window = 5000 ms. Không chặn SOS khi thiếu GPS hoặc thiếu danh bạ. Ví dụ: giữ 2500 ms rồi thả -> không kích hoạt; giữ 3000 ms -> đếm ngược 5s."
+      ],
+      "acceptance_criteria": [
+        {
+          "given": "Người dùng đang ở màn hình chính và thiết bị chưa từng có tọa độ GPS",
+          "when": "Người dùng giữ nút SOS đủ 3 giây và không bấm Hủy trong 5 giây",
+          "then": "Trạng thái SOS vẫn chuyển sang ACTIVE với location_unavailable = true và kích hoạt FR-006"
+        },
+        {
+          "given": "Người dùng đã giữ nút SOS đủ 3 giây và màn hình đang đếm ngược ở giây thứ 2",
+          "when": "Người dùng bấm nút 'HỦY SOS'",
+          "then": "Đếm ngược dừng lại, trạng thái quay về IDLE và không có tín hiệu SOS hay SMS nào được phát đi"
+        }
+      ]
+    },
+    {
+      "id": "FR-006",
+      "title": "Phát cảnh báo SOS đa kênh Online (bất đồng bộ) và SMS Fallback khi Offline",
+      "description": "Hệ thống SHALL lưu phiên SOS và trả link theo dõi ngay lập tức khi có mạng (đồng thời gửi SMS Gateway bất đồng bộ), hoặc mở expo-sms composer khi mất mạng và xử lý đồng bộ bù khi có mạng.",
+      "priority": "P0",
+      "source_refs": ["REQ-005"],
+      "main_flow": [
+        "1. Khi SOS chuyển sang ACTIVE, ứng dụng thu thập GPS (hoặc location_unavailable=true), battery_level, recorded_at, trip_id, EmergencyCard và kiểm tra mạng qua NetInfo.",
+        "2. Nếu NetInfo báo có mạng: Ứng dụng gọi POST /api/v1/sos/trigger kèm client_id (timeout 5000 ms).",
+        "3. Backend lưu SosSession (tối đa 1 ACTIVE/user) với tracking_token 32-byte, đặt delivery_status = PENDING, trả HTTP 201 Created ngay lập tức và đưa tác vụ gửi SMS qua SMSGatewayAdapter vào hàng đợi nền.",
+        "4. Tác vụ nền gửi SMS tới từng liên hệ khẩn cấp kèm tọa độ, % pin, thời điểm cập nhật cuối và tracking_url, sau đó cập nhật delivery_status = SENT (hoặc PARTIAL_FAILED nếu lỗi)."
+      ],
+      "alternate_flows": [
+        "NetInfo báo offline hoặc API timeout > 5000 ms: Lập tức (< 1000 ms) mở expo-sms composer với danh sách SĐT người thân và mẫu SMS (có link Google Maps hoặc 'Chua xac dinh GPS' nếu location_unavailable=true), rồi chuyển sang SCR-SOS-04 hiển thị nút 'Gửi lại SMS' phòng trường hợp người dùng đóng nhầm composer.",
+        "Đồng bộ bù khi có mạng lại sau SOS Offline: Nếu phiên chưa kết thúc trên máy, gửi POST /api/v1/sos/trigger (triggered_offline=true) để tạo SosSession và gửi SMS follow-up kèm tracking_url; nếu người dùng đã kết thúc trên máy trước khi có mạng, gửi với resolved_offline=true để lưu lịch sử RESOLVED mà không gửi cảnh báo mới."
+      ],
+      "exception_flows": [
+        "SMSGatewayAdapter lỗi ở tác vụ nền: Retry tối đa 3 lần (1s, 2s, 4s); nếu vẫn lỗi đặt delivery_status = PARTIAL_FAILED.",
+        "Không có SĐT người thân nào và đang Offline: Hiển thị ERR_SOS_NO_CONTACTS_OFFLINE và gợi ý gọi 113/115."
+      ],
+      "business_rules": [
+        "BR-006: Kiểm tra NetInfo trước khi gọi API; timeout 5000 ms. Mẫu tin Online: '[COT MOC SOS] <full_name> can ho tro luc <HH:mm>. Vi tri: <lat>,<lng | Chua xac dinh GPS> | Pin: <battery>% | Theo doi: <tracking_url>'. Mẫu Follow-up offline sync: '[COT MOC SOS - CAP NHAT LINK] <full_name> da kich hoat SOS offline luc <HH:mm>. Theo doi: <tracking_url>'."
+      ],
+      "acceptance_criteria": [
+        {
+          "given": "Thiết bị online, pin 42%, tọa độ (21.028511, 105.804817) và có 2 liên hệ khẩn cấp",
+          "when": "SOS được kích hoạt",
+          "then": "POST /api/v1/sos/trigger trả HTTP 201 ngay với delivery_status = PENDING và tracking_url; tác vụ nền gọi SMSGatewayAdapter gửi tin tới 2 liên hệ"
+        },
+        {
+          "given": "Thiết bị đang Offline (NetInfo isConnected=false), pin 15%, có liên hệ '+84987654321'",
+          "when": "SOS được kích hoạt và người dùng đóng nhầm cửa sổ SMS composer",
+          "then": "Ứng dụng chuyển sang SCR-SOS-04 hiển thị trạng thái SOS Offline và nút 'Gửi lại SMS' để mở lại composer bất cứ lúc nào"
+        },
+        {
+          "given": "Một SOS Offline đã được người dùng kết thúc trên máy (resolved_offline = true) trước khi có mạng",
+          "when": "Thiết bị có mạng trở lại và đồng bộ bù",
+          "then": "Backend tạo SosSession ở trạng thái RESOLVED để lưu lịch sử và KHÔNG gửi cảnh báo mới tới người thân"
+        }
+      ]
+    },
+    {
+      "id": "FR-007",
+      "title": "Trang Web theo dõi trực tiếp cho người thân qua Token tạm thời",
+      "description": "FastAPI backend SHALL cung cấp trang web công khai theo tracking_token tạm thời hiển thị vị trí cuối cùng, trạng thái SOS, mức pin và vệt di chuyển gần nhất mà người thân không cần cài app.",
+      "priority": "P0",
+      "source_refs": ["REQ-006"],
+      "main_flow": [
+        "1. Người thân mở đường dẫn công khai GET /track/{tracking_token} trên trình duyệt web.",
+        "2. FastAPI tra cứu tracking_token trong tbl_sos_sessions.",
+        "3. Backend trả về trang HTML mobile-responsive (HTTP 200) hiển thị tọa độ cuối cùng (hoặc 'Chưa có tín hiệu GPS' nếu location_unavailable=true), trạng thái SOS (ACTIVE/RESOLVED), % pin, updated_at, thẻ y tế/xe (CHỈ KHI status == ACTIVE) và tối đa 50 điểm vệt di chuyển gần nhất.",
+        "4. Trang web tự động làm mới dữ liệu qua GET /api/v1/track/{tracking_token}/status mỗi 15 giây."
+      ],
+      "alternate_flows": [
+        "SOS đã chuyển sang trạng thái RESOLVED (chưa quá 24h): Trang web hiển thị 'Đã an toàn (RESOLVED)', ẩn thông tin y tế/xe, và khóa vệt di chuyển + vị trí cuối tại thời điểm <= ended_at để không lộ vị trí sau khi đã an toàn."
+      ],
+      "exception_flows": [
+        "tracking_token không tồn tại trong hệ thống: Backend trả HTTP 404 Not Found với mã ERR_TRACK_TOKEN_NOT_FOUND.",
+        "tracking_token đã hết hạn (now > expires_at) hoặc đã bị thu hồi (revoked_at IS NOT NULL): Backend trả HTTP 410 Gone với mã ERR_TRACK_TOKEN_EXPIRED."
+      ],
+      "business_rules": [
+        "BR-007: tracking_token 32-byte URL-safe. Nếu ACTIVE: hiển thị thẻ y tế và cập nhật trail liên tục (tối đa 72h). Nếu RESOLVED: ẩn thẻ y tế, chỉ trả về điểm breadcrumb có recorded_at <= ended_at, và link hết hạn sau ended_at + 24h."
+      ],
+      "acceptance_criteria": [
+        {
+          "given": "Phiên SOS đang ACTIVE với tracking_token hợp lệ, tọa độ (21.028511, 105.804817), pin 35%",
+          "when": "Người thân truy cập GET /track/{tracking_token}",
+          "then": "Backend trả HTTP 200 OK với HTML hiển thị trạng thái ACTIVE, tọa độ, mức pin 35%, thẻ y tế và vệt di chuyển"
+        },
+        {
+          "given": "Phiên SOS đã RESOLVED lúc 18:00 và chuyến đi vẫn ghi thêm breadcrumb lúc 18:05",
+          "when": "Người thân gọi GET /api/v1/track/{tracking_token}/status lúc 18:10",
+          "then": "Backend trả trạng thái RESOLVED, ẩn thẻ y tế và chỉ trả các điểm có recorded_at <= 18:00"
+        },
+        {
+          "given": "tracking_token không tồn tại hoặc đã quá hạn 24h",
+          "when": "Người thân truy cập GET /track/{tracking_token}",
+          "then": "Backend trả HTTP 404 (ERR_TRACK_TOKEN_NOT_FOUND) nếu không tồn tại hoặc HTTP 410 (ERR_TRACK_TOKEN_EXPIRED) nếu hết hạn/thu hồi"
+        }
+      ]
+    },
+    {
+      "id": "FR-008",
+      "title": "Hẹn giờ Check-in an toàn (Dead Man's Switch)",
+      "description": "Hệ thống SHALL cho phép người dùng đặt mốc thời gian dự kiến an toàn và tự động phát cảnh báo kèm tọa độ cuối cùng cho người thân nếu quá hạn mà người dùng không xác nhận 'Tôi an toàn'.",
+      "priority": "P0",
+      "source_refs": ["REQ-007"],
+      "main_flow": [
+        "1. Người dùng đặt deadline_at (now + 5m <= deadline_at <= now + 72h), ghi chú lộ trình (tùy chọn) và bấm Bắt đầu đếm giờ.",
+        "2. Ứng dụng gửi POST /api/v1/safety-timers kèm tọa độ hiện tại; backend tạo bản ghi ARMED (mỗi user tối đa 1 timer ARMED). Nếu deadline_at - now > 10 phút, app đặt lịch nhắc trước 10 phút; nếu <= 10 phút, app bỏ qua lịch nhắc và hiện toast nhắc nhớ.",
+        "3. Trong khi ARMED, app cập nhật vị trí mỗi 5 phút qua PUT /api/v1/safety-timers/{id}/location và gọi GET /api/v1/safety-timers/active khi mở app.",
+        "4. Nếu quá deadline_at trong vòng <= 60 giây mà trạng thái vẫn là ARMED, scheduler server thực hiện chuyển trạng thái nguyên tử (ARMED -> EXPIRED_ALERTED), tạo SosSession (hoặc gắn vào SosSession ACTIVE hiện có) với trigger_source = DEAD_MAN_SWITCH và phát cảnh báo tới người thân."
+      ],
+      "alternate_flows": [
+        "Bấm 'Tôi an toàn' hoặc Gia hạn khi đang Online: Gọi POST /api/v1/safety-timers/{id}/checkin (compare-and-set ARMED -> CHECKED_IN) hoặc /extend.",
+        "Bấm 'Tôi an toàn' hoặc Gia hạn khi đang Offline: Lưu hành động vào hàng đợi SQLite (sync_status = PENDING), hiển thị trạng thái 'Chờ đồng bộ — cần mạng để xác nhận với server' và tự động gửi ngay khi có mạng."
+      ],
+      "exception_flows": [
+        "deadline_at ở quá khứ, < now + 5m, hoặc > now + 72h: Backend trả HTTP 422 Unprocessable Entity (ERR_TIMER_INVALID_DEADLINE).",
+        "Tạo timer mới khi đã có timer ARMED: Backend trả HTTP 409 Conflict (ERR_TIMER_ALREADY_ARMED).",
+        "Check-in gửi lên sau khi scheduler đã chuyển EXPIRED_ALERTED: Backend trả HTTP 409 Conflict (ERR_TIMER_ALREADY_EXPIRED)."
+      ],
+      "business_rules": [
+        "BR-008: Tối đa 1 timer ARMED/user. now + 5m <= deadline_at <= now + 72h. Độ trễ cảnh báo <= 60s. Chuyển trạng thái bằng atomic compare-and-set trên status == 'ARMED'. Ví dụ: deadline 18:00:00, scheduler quét 18:00:15 -> nếu check-in đến 18:00:10 (trước khi quét) vẫn thành CHECKED_IN; đến 18:00:30 (sau khi quét) -> 409 ERR_TIMER_ALREADY_EXPIRED."
+      ],
+      "acceptance_criteria": [
+        {
+          "given": "Người dùng đặt safety timer với deadline 18:00:00 và tọa độ cuối (21.1, 105.8)",
+          "when": "Đồng hồ server vượt quá 18:00:00 trong vòng 60 giây mà chưa có check-in",
+          "then": "Server chuyển timer sang EXPIRED_ALERTED, tạo SosSession (trigger_source=DEAD_MAN_SWITCH) và phát cảnh báo kèm tọa độ (21.1, 105.8)"
+        },
+        {
+          "given": "Người dùng đặt safety timer với deadline = now + 5 phút",
+          "when": "Timer được kích hoạt",
+          "then": "Hệ thống không tạo local notification trong quá khứ và hiển thị thông báo nhắc trực tiếp trên màn hình"
+        },
+        {
+          "given": "Safety timer deadline 18:00:00 đã chuyển EXPIRED_ALERTED lúc 18:00:15",
+          "when": "Người dùng gửi check-in lúc 18:00:30",
+          "then": "Backend từ chối với HTTP 409 Conflict và mã ERR_TIMER_ALREADY_EXPIRED"
+        }
+      ]
+    },
+    {
+      "id": "FR-009",
+      "title": "Lưu vết hành trình nền tối ưu pin (Breadcrumb Trail)",
+      "description": "Hệ thống SHALL ghi nhận tọa độ GPS theo chu kỳ tối ưu pin khi chuyến đi đang chạy, lưu cục bộ trên thiết bị và đồng bộ theo lô lên server khi có mạng.",
+      "priority": "P0",
+      "source_refs": ["REQ-008"],
+      "main_flow": [
+        "1. Khi chuyến đi ở trạng thái ACTIVE, dịch vụ nền thu thập điểm GPS (lat, lng, altitude_m, speed_kmh, accuracy_m, battery_level, recorded_at).",
+        "2. Ứng dụng lọc bỏ điểm có accuracy_m > 100m và điều chỉnh chu kỳ: 15 giây khi speed >= 2.0 km/h, 120 giây khi speed < 2.0 km/h.",
+        "3. Mỗi điểm hợp lệ được ghi vào SQLite cục bộ với sync_status = PENDING.",
+        "4. Khi có mạng và đủ lô 10 điểm (hoặc mỗi 60 giây), ứng dụng gửi POST /api/v1/trips/{trip_id}/breadcrumbs và cập nhật sync_status = SYNCED."
+      ],
+      "alternate_flows": [
+        "Thiết bị mất mạng kéo dài: Toàn bộ điểm GPS lưu trong SQLite và đồng bộ bù theo thứ tự thời gian (sau khi Trip cha đã SYNCED)."
+      ],
+      "exception_flows": [
+        "Người dùng từ chối quyền Background Location: Hiển thị ERR_LOCATION_PERMISSION_DENIED trên SCR-TRIP-01 và hướng dẫn mở Cài đặt; chuyến đi vẫn tạo được nhưng không ghi breadcrumb nền.",
+        "Hệ điều hành tạm dừng dịch vụ nền: Khi mở lại app, ứng dụng kiểm tra chuyến đi ACTIVE trong SQLite và tự khởi động lại dịch vụ ghi breadcrumb.",
+        "Tọa độ GPS có accuracy_m > 100m: Bỏ qua điểm nhiễu; lỗi 5xx/mạng khi đồng bộ thì giữ sync_status = PENDING."
+      ],
+      "business_rules": [
+        "BR-009: Chu kỳ ghi = 15s khi speed >= 2.0 km/h; 120s khi speed < 2.0 km/h. Điểm có accuracy_m > 100m bị loại bỏ. Ví dụ: xe chạy 45 km/h, accuracy_m = 12 -> ghi mỗi 15s; accuracy_m = 250 -> bỏ qua."
+      ],
+      "acceptance_criteria": [
+        {
+          "given": "Chuyến đi đang ở trạng thái ACTIVE và thiết bị đang ngoại tuyến",
+          "when": "Thiết bị ghi nhận 3 điểm GPS hợp lệ (accuracy_m = 10) rồi có mạng trở lại",
+          "then": "3 điểm được lưu SQLite trước và tự đồng bộ lên POST /api/v1/trips/{trip_id}/breadcrumbs khi có mạng với HTTP 200 OK"
+        },
+        {
+          "given": "Thiết bị nhận được điểm GPS có độ chính xác accuracy_m = 250m",
+          "when": "Bộ lọc breadcrumb xử lý điểm này",
+          "then": "Điểm bị loại bỏ, không lưu vào SQLite và không làm sai lệch quãng đường chuyến đi"
+        }
+      ]
+    },
+    {
+      "id": "FR-010",
+      "title": "Quản lý vòng đời chuyến đi và lịch sử (Bắt đầu / Tạm dừng / Kết thúc)",
+      "description": "Hệ thống SHALL cho phép người dùng Bắt đầu, Tạm dừng, Tiếp tục và Kết thúc chuyến đi, tự động tính tổng quãng đường (km) và thời gian di chuyển để xem lại trong lịch sử.",
+      "priority": "P0",
+      "source_refs": ["REQ-009"],
+      "main_flow": [
+        "1. Người dùng nhập tên chuyến đi (tùy chọn, mặc định 'Chuyến đi YYYY-MM-DD HH:mm') và bấm 'Bắt đầu chuyến đi'.",
+        "2. Ứng dụng tạo chuyến đi trạng thái ACTIVE trong SQLite và đồng bộ POST /api/v1/trips.",
+        "3. Người dùng có thể bấm 'Tạm dừng' (ACTIVE -> PAUSED) hoặc 'Tiếp tục' (PAUSED -> ACTIVE).",
+        "4. Khi bấm 'Kết thúc chuyến đi', ứng dụng chuyển trạng thái sang COMPLETED, tính distance_km (Haversine) và duration_seconds (không tính khoảng thời gian PAUSED)."
+      ],
+      "alternate_flows": [
+        "Xem lịch sử chuyến đi: Mở tab Nhật ký xem danh sách chuyến đi đã hoàn thành gồm tên, ngày thực hiện (started_at), distance_km và duration_seconds."
+      ],
+      "exception_flows": [
+        "Bắt đầu chuyến đi mới khi đang có chuyến ACTIVE hoặc PAUSED: Chặn với HTTP 409 Conflict và mã ERR_TRIP_ALREADY_ACTIVE.",
+        "Chuyển trạng thái không hợp lệ (ví dụ Tạm dừng chuyến đã COMPLETED): Backend trả HTTP 409 Conflict và mã ERR_TRIP_INVALID_STATE_TRANSITION."
+      ],
+      "business_rules": [
+        "BR-010: Mỗi user có tối đa 1 chuyến ACTIVE hoặc PAUSED tại 1 thời điểm. Tổng quãng đường = tổng Haversine các cặp breadcrumb liên tiếp (làm tròn 2 chữ số thập phân). Ví dụ: (21.000, 105.800) -> (21.009, 105.800) = 1.00 km."
+      ],
+      "acceptance_criteria": [
+        {
+          "given": "Người dùng không có chuyến đi nào đang hoạt động, bắt đầu lúc 08:00:00",
+          "when": "Ghi 2 breadcrumb (21.000, 105.800) và (21.009, 105.800), tạm dừng 08:10:00..08:20:00 (600s), rồi kết thúc lúc 08:30:00",
+          "then": "Trạng thái chuyển ACTIVE -> PAUSED -> ACTIVE -> COMPLETED, distance_km = 1.00 km và duration_seconds = 1200"
+        },
+        {
+          "given": "Người dùng đang có chuyến đi T-001 ở trạng thái ACTIVE",
+          "when": "Người dùng cố gắng tạo chuyến đi mới T-002",
+          "then": "Hệ thống từ chối tạo mới với HTTP 409 Conflict và mã lỗi ERR_TRIP_ALREADY_ACTIVE"
+        }
+      ]
+    },
+    {
+      "id": "FR-011",
+      "title": "Check-in ảnh & ghi chú gắn tọa độ GPS với hàng đợi Offline",
+      "description": "Hệ thống SHALL cho phép người dùng chụp/chọn ảnh và nhập ghi chú gắn đúng tọa độ GPS hiện tại trong chuyến đi, lưu hàng đợi cục bộ khi mất sóng và tự đồng bộ khi có mạng.",
+      "priority": "P0",
+      "source_refs": ["REQ-010"],
+      "main_flow": [
+        "1. Trong chuyến đi ACTIVE/PAUSED, người dùng bấm Check-in, chụp/chọn ảnh (JPEG/PNG) và nhập ghi chú (<= 500 ký tự).",
+        "2. Ứng dụng nén ảnh xuống tối đa 1920px cạnh dài (JPEG 85%), gắn tọa độ GPS hiện tại (hoặc last known với is_stale_location=true) và render watermark (FR-012).",
+        "3. Ứng dụng lưu ảnh và metadata vào SQLite cục bộ với sync_status = PENDING.",
+        "4. Khi có mạng (và Trip cha đã có sync_status = SYNCED), worker tải lên POST /api/v1/trips/{trip_id}/checkins và cập nhật sync_status = SYNCED."
+      ],
+      "alternate_flows": [
+        "Check-in khi mất sóng: Hiển thị ngay trên bản đồ và danh sách check-in với huy hiệu 'Chờ đồng bộ', tự động tải lên khi có mạng."
+      ],
+      "exception_flows": [
+        "Ảnh sai định dạng (không phải JPEG/PNG) hoặc sau khi nén xuống 1920px vẫn > 10 MB: Từ chối lưu với mã ERR_CHECKIN_INVALID_IMAGE (HTTP 422 trên server).",
+        "Ghi chú vượt quá 500 ký tự: Chặn lưu với mã ERR_CHECKIN_NOTE_TOO_LONG (HTTP 422 trên server).",
+        "Chưa từng có tọa độ GPS nào trên máy: Chặn lưu với mã ERR_CHECKIN_NO_GPS.",
+        "Upload thất bại do mạng sau 3 lần retry (5s, 15s, 45s): Giữ nguyên sync_status = PENDING và thử lại ở sự kiện kết nối mạng tiếp theo; nếu server trả 4xx thì đánh dấu FAILED_PERMANENT."
+      ],
+      "business_rules": [
+        "BR-011: Ghi chú <= 500 ký tự; ảnh nén về max 1920px cạnh dài (JPEG 85%) và sau nén phải <= 10 MB (JPEG/PNG). Ví dụ: ảnh gốc 12 MB -> nén còn 2.4 MB JPEG -> hợp lệ."
+      ],
+      "acceptance_criteria": [
+        {
+          "given": "Người dùng đang trong chuyến đi ACTIVE ở vùng mất sóng",
+          "when": "Người dùng chụp ảnh check-in với ghi chú 'Đỉnh đèo Mã Pí Lèng'",
+          "then": "Check-in lưu hàng đợi cục bộ với sync_status = PENDING, hiện huy hiệu 'Chờ đồng bộ'; khi có mạng tự đồng bộ lên server trả HTTP 201"
+        },
+        {
+          "given": "Người dùng nhập ghi chú dài 600 ký tự",
+          "when": "Người dùng bấm lưu Check-in",
+          "then": "Hệ thống chặn lưu với HTTP 422 / lỗi cục bộ mã ERR_CHECKIN_NOTE_TOO_LONG"
+        }
+      ]
+    },
+    {
+      "id": "FR-012",
+      "title": "Gắn watermark thông số lên ảnh Check-in",
+      "description": "Hệ thống SHALL tự động gắn lớp phủ watermark lên ảnh check-in gồm Tên địa điểm (hoặc tọa độ GPS), Độ cao (m) và Ngày giờ chụp theo múi giờ thiết bị trước khi lưu và đồng bộ.",
+      "priority": "P0",
+      "source_refs": ["REQ-011"],
+      "main_flow": [
+        "1. Xác định nguồn thông số: Nếu chụp từ Camera, dùng GPS hiện tại, thời gian thiết bị hiện tại và độ cao làm tròn số nguyên (Math.round); nếu chọn từ Thư viện (Gallery), ưu tiên đọc EXIF DateTimeOriginal & EXIF GPS/Altitude nếu có, nếu thiếu thì dùng thời gian & GPS thiết bị hiện tại.",
+        "2. Nếu online, gọi OpenStreetMap Nominatim (timeout 2000 ms, cache 24h theo tọa độ 4 chữ số thập phân) để lấy location_name (cắt tối đa 40 ký tự + '...' nếu dài hơn); nếu offline/timeout dùng chuỗi 'lat, lng' 6 chữ số thập phân.",
+        "3. Vẽ dải watermark bán trong suốt ở góc dưới ảnh theo định dạng '<Địa điểm | Tọa độ> | <Độ cao nguyên> m | <YYYY-MM-DD HH:mm>' và lưu làm ảnh check-in chính thức."
+      ],
+      "alternate_flows": [
+        "Offline hoặc Nominatim timeout > 2000 ms: Dùng chuỗi tọa độ '21.028511, 105.804817'.",
+        "altitude_m là null: Hiển thị '-- m'."
+      ],
+      "exception_flows": [
+        "Lỗi render đồ họa trên thiết bị: Ghi log ERR_WATERMARK_RENDER_FAILED và lưu ảnh gốc kèm metadata văn bản để không mất dữ liệu."
+      ],
+      "business_rules": [
+        "BR-012: Watermark gồm 3 phần: '<Địa điểm (<=40 chars) | Tọa độ> | <Math.round(altitude_m)> m | <YYYY-MM-DD HH:mm (Local TZ)>'. Không dùng dấu phẩy phân cách hàng nghìn cho độ cao. Ví dụ: 'Đèo Ô Quy Hồ | 2000 m | 2026-11-25 10:30'."
+      ],
+      "acceptance_criteria": [
+        {
+          "given": "Người dùng chụp ảnh tại tọa độ (22.356410, 103.776520), độ cao 2000.4m lúc 2026-11-25 10:30 (giờ địa phương) khi đang offline",
+          "when": "Hệ thống xử lý ảnh check-in",
+          "then": "Ảnh kết quả chứa watermark với chuỗi '22.356410, 103.776520 | 2000 m | 2026-11-25 10:30'"
+        },
+        {
+          "given": "Người dùng chọn một ảnh có sẵn từ thư viện (Gallery) có EXIF DateTimeOriginal '2026-11-24 15:20' nhưng không có EXIF GPS",
+          "when": "Hệ thống render watermark",
+          "then": "Watermark dùng thời gian EXIF '2026-11-24 15:20' và tọa độ GPS hiện tại của thiết bị"
+        }
+      ]
+    },
+    {
+      "id": "FR-013",
+      "title": "Export ảnh tổng kết hành trình (Poster 9:16 hoặc 1:1) có che 1–2 km đầu/cuối",
+      "description": "Hệ thống SHALL cho phép người dùng chọn 2–4 ảnh check-in nổi bật của chuyến đi đã hoàn thành, chọn tỷ lệ 9:16 hoặc 1:1 và tùy chọn ẩn 1–2 km đầu/cuối cung đường để xuất ảnh tổng kết trên nền tối giản offline.",
+      "priority": "P1",
+      "source_refs": ["REQ-012"],
+      "main_flow": [
+        "1. Từ Chi tiết chuyến đi (status = COMPLETED), người dùng bấm 'Xuất ảnh hành trình'.",
+        "2. Chọn 2–4 ảnh check-in, chọn tỷ lệ 9:16 (1080x1920 px) hoặc 1:1 (1080x1080 px) và mức che đầu/cuối privacy_trim_km trong {0, 1, 2} km.",
+        "3. Hệ thống tính effective_trim = min(privacy_trim_km, 0.25 * distance_km) cho mỗi đầu để luôn giữ lại ít nhất 50% cung đường, vẽ đường polyline lên nền bản đồ tối giản offline kèm lưới ảnh (2 ảnh: chia đôi; 3 ảnh: 1 lớn trên + 2 nhỏ dưới; 4 ảnh: lưới 2x2), tổng distance_km và thời gian di chuyển.",
+        "4. Xem trước poster và lưu về máy hoặc chia sẻ qua OS Share Sheet."
+      ],
+      "alternate_flows": [
+        "Chuyến đi ngắn có 0.25 * distance_km < privacy_trim_km: Hệ thống tự động giới hạn mức che ở 0.25 * distance_km mỗi đầu và hiển thị thông báo giải thích."
+      ],
+      "exception_flows": [
+        "Chọn < 2 hoặc > 4 ảnh check-in: Chặn xuất với mã ERR_EXPORT_INVALID_PHOTO_COUNT.",
+        "Chuyến đi chưa hoàn thành (status != COMPLETED): Vô hiệu hóa nút Xuất với mã ERR_EXPORT_TRIP_NOT_COMPLETED.",
+        "Từ chối quyền lưu thư viện ảnh: Hiển thị ERR_EXPORT_STORAGE_PERMISSION_DENIED và gợi ý mở Cài đặt, vẫn cho phép dùng OS Share Sheet."
+      ],
+      "business_rules": [
+        "BR-013: 2 <= selected_photos <= 4; tỷ lệ {'9:16', '1:1'}; privacy_trim_km in {0, 1, 2}. effective_trim = min(privacy_trim_km, 0.25 * distance_km) mỗi đầu. Ví dụ: chuyến 2.00 km, trim 1 km -> effective_trim = min(1, 0.50) = 0.50 km mỗi đầu -> vẽ 1.00 km ở giữa; chuyến 4.00 km, trim 2 km -> effective_trim = min(2, 1.00) = 1.00 km mỗi đầu -> vẽ 2.00 km ở giữa."
+      ],
+      "acceptance_criteria": [
+        {
+          "given": "Chuyến đi COMPLETED dài 2.00 km có 3 ảnh check-in",
+          "when": "Người dùng chọn 2 ảnh, tỷ lệ 1:1 và bật che 1 km đầu/cuối rồi bấm Xuất",
+          "then": "Hệ thống áp dụng effective_trim = 0.50 km mỗi đầu (cắt 0.50 km đầu và 0.50 km cuối), vẽ đoạn giữa 1.00 km trên ảnh 1080x1080 px"
+        },
+        {
+          "given": "Người dùng chỉ chọn 1 ảnh check-in",
+          "when": "Người dùng bấm Xuất ảnh hành trình",
+          "then": "Hệ thống từ chối xuất và hiển thị mã lỗi ERR_EXPORT_INVALID_PHOTO_COUNT"
+        }
+      ]
+    },
+    {
+      "id": "FR-014",
+      "title": "Tra cứu, cập nhật Heartbeat, kết thúc phiên SOS và thu hồi link theo dõi",
+      "description": "Hệ thống SHALL cho phép ứng dụng tra cứu phiên SOS đang hoạt động (kể cả do Dead Man's Switch tạo), cập nhật vị trí/pin định kỳ, kết thúc phiên SOS hoặc thu hồi tức thì link Web Tracking.",
+      "priority": "P0",
+      "source_refs": ["REQ-005", "REQ-006"],
+      "main_flow": [
+        "1. Khi mở app hoặc nhận thông báo timer quá hạn, ứng dụng gọi GET /api/v1/sos/active để lấy sos_id, tracking_url và delivery_status của phiên SOS đang ACTIVE (nếu có).",
+        "2. Khi SosSession đang ACTIVE, ứng dụng gửi POST /api/v1/sos/{sos_id}/heartbeat mỗi 30 giây kèm latitude, longitude, battery_level, recorded_at.",
+        "3. Khi người dùng bấm 'Kết thúc SOS', ứng dụng gọi POST /api/v1/sos/{sos_id}/resolve; backend đặt status = RESOLVED, ended_at = now, expires_at = ended_at + 24h.",
+        "4. Khi người dùng bấm 'Thu hồi link theo dõi', ứng dụng gọi POST /api/v1/sos/{sos_id}/revoke-link; backend đặt revoked_at = now và expires_at = now."
+      ],
+      "alternate_flows": [
+        "Mất mạng khi gửi heartbeat SOS: Lưu tạm điểm mới nhất vào SQLite và gửi khi có mạng lại."
+      ],
+      "exception_flows": [
+        "Gọi resolve/revoke cho sos_id không thuộc về người dùng hiện tại: Backend trả HTTP 403 Forbidden (ERR_FORBIDDEN_RESOURCE).",
+        "Gọi heartbeat hoặc resolve cho phiên SOS đã RESOLVED: Backend trả HTTP 409 Conflict (ERR_SOS_NOT_ACTIVE)."
+      ],
+      "business_rules": [
+        "BR-014: Mỗi user có tối đa 1 SosSession ở trạng thái ACTIVE tại 1 thời điểm. Phiên ACTIVE tự động chuyển RESOLVED sau tối đa 72 giờ nếu không được kết thúc thủ công. Heartbeat gửi mỗi 30s khi SOS ACTIVE."
+      ],
+      "acceptance_criteria": [
+        {
+          "given": "Dead Man's Switch vừa hết hạn trên server và tạo SosSession ACTIVE",
+          "when": "Ứng dụng gọi GET /api/v1/sos/active",
+          "then": "Backend trả HTTP 200 OK kèm sos_id và tracking_url để người dùng xem và bấm 'Tôi đã an toàn' trên SCR-SOS-04"
+        },
+        {
+          "given": "Phiên SOS đang ACTIVE",
+          "when": "Chủ tài khoản gọi POST /api/v1/sos/{sos_id}/revoke-link",
+          "then": "Backend trả HTTP 200 OK và mọi truy cập GET /track/{tracking_token} sau đó trả về HTTP 410 Gone"
+        }
+      ]
+    },
+    {
+      "id": "NFR-001",
+      "title": "Hiệu năng phản hồi API và thao tác SOS cục bộ",
+      "description": "Các API REST trên FastAPI (bao gồm POST /api/v1/sos/trigger bất đồng bộ) SHALL đạt độ trễ p95 < 300ms; mở SMS fallback khi offline SHALL phản hồi trong < 1000ms.",
+      "priority": "P0",
+      "source_refs": ["REQ-004", "REQ-005", "REQ-006"],
+      "main_flow": [
+        "1. Đo thời gian phản hồi của các endpoint REST API chính (POST /api/v1/sos/trigger, GET /api/v1/track/{token}/status) dưới tải mô phỏng.",
+        "2. Đo thời gian chuyển từ hết đếm ngược SOS sang mở expo-sms composer ở chế độ Offline."
+      ],
+      "exception_flows": [
+        "Nếu p95 vượt quá 300ms hoặc SMS fallback trễ > 1000ms: kiểm thử hiệu năng đánh dấu FAILED."
+      ],
+      "business_rules": [
+        "BR-NFR-001: API p95 < 300ms (nhờ gửi SMS Gateway bất đồng bộ); Offline SOS fallback < 1000ms."
+      ],
+      "acceptance_criteria": [
+        {
+          "given": "Hệ thống FastAPI backend chạy với bộ dữ liệu kiểm thử",
+          "when": "Gửi 100 yêu cầu tới GET /api/v1/track/{token}/status và POST /api/v1/sos/trigger (bất đồng bộ)",
+          "then": "Độ trễ p95 dưới 300ms và tỷ lệ lỗi 5xx bằng 0%"
+        },
+        {
+          "given": "Thiết bị di động ở chế độ máy bay (offline)",
+          "when": "Hoàn tất đếm ngược 5 giây SOS",
+          "then": "Trình soạn SMS với nội dung đầy đủ được kích hoạt trong vòng dưới 1000ms"
+        }
+      ]
+    },
+    {
+      "id": "NFR-002",
+      "title": "Bảo mật phiên, mật khẩu, giới hạn tốc độ và quyền sở hữu tài nguyên",
+      "description": "Hệ thống SHALL băm mật khẩu bằng bcrypt/argon2, lưu JWT trong SecureStore, giới hạn tần suất hợp lý (hỗ trợ CGNAT), và kiểm tra quyền sở hữu user_id trên mọi tài nguyên riêng tư.",
+      "priority": "P0",
+      "source_refs": ["REQ-001", "REQ-006", "REQ-012"],
+      "main_flow": [
+        "1. Mật khẩu băm một chiều; mọi endpoint riêng tư kiểm tra JWT và user_id sở hữu tài nguyên.",
+        "2. Áp dụng rate limit cho POST /api/v1/auth/login (5 req/phút/IP), GET /track/{token} & GET /api/v1/track/{token}/status (120 req/phút/(token, IP), và 20 req/phút/IP cho các lookup 404/410)."
+      ],
+      "exception_flows": [
+        "Truy cập tài nguyên của user khác: Trả HTTP 403 Forbidden (ERR_FORBIDDEN_RESOURCE).",
+        "Vượt ngưỡng rate limit: Trả HTTP 429 Too Many Requests (ERR_RATE_LIMIT_EXCEEDED)."
+      ],
+      "business_rules": [
+        "BR-NFR-002: Zero plain-text password; token 32-byte URL-safe; login <= 5 req/min/IP; tracking <= 120 req/min/(token, IP) và <= 20 req/min/IP cho token lỗi."
+      ],
+      "acceptance_criteria": [
+        {
+          "given": "3 người thân dùng chung 1 IP CGNAT cùng mở trang /track/{token} và poll mỗi 15 giây (tổng 12 req/phút)",
+          "when": "Các yêu cầu gọi GET /api/v1/track/{token}/status",
+          "then": "Toàn bộ yêu cầu đều thành công HTTP 200 OK và không bị chặn 429"
+        },
+        {
+          "given": "Một IP gửi 6 yêu cầu đăng nhập sai liên tiếp trong 1 phút",
+          "when": "Yêu cầu thứ 6 tới POST /api/v1/auth/login",
+          "then": "Backend chặn với HTTP 429 Too Many Requests và mã ERR_RATE_LIMIT_EXCEEDED"
+        }
+      ]
+    },
+    {
+      "id": "NFR-003",
+      "title": "Độ tin cậy Offline-First và đồng bộ không mất dữ liệu",
+      "description": "Ứng dụng di động SHALL lưu trữ toàn bộ dữ liệu chuyến đi, breadcrumb, check-in và danh bạ khẩn cấp trong SQLite cục bộ và đồng bộ idempotent theo (user_id, client_id).",
+      "priority": "P0",
+      "source_refs": ["REQ-002", "REQ-008", "REQ-010"],
+      "main_flow": [
+        "1. Mọi thao tác ghi trên mobile lưu vào SQLite cục bộ trước với sync_status = PENDING.",
+        "2. Worker đồng bộ gửi theo thứ tự phụ thuộc (Trip -> Breadcrumbs & Checkins) kèm client_id (UUID) để server xử lý idempotent theo cặp (user_id, client_id)."
+      ],
+      "exception_flows": [
+        "Gửi trùng lặp cùng một (user_id, client_id): Server trả HTTP 200 OK với bản ghi đã tạo trước đó thay vì tạo trùng."
+      ],
+      "business_rules": [
+        "BR-NFR-003: Zero data loss khi mất mạng; khóa idempotent duy nhất theo (user_id, client_id); replay trả HTTP 200 OK; thứ tự đồng bộ Trip trước Breadcrumb/Checkin."
+      ],
+      "acceptance_criteria": [
+        {
+          "given": "Một điểm check-in của User A có client_id = 'chk-001' đã được đồng bộ lên server",
+          "when": "App của User A gửi lại cùng payload với client_id = 'chk-001' do rớt mạng",
+          "then": "Server không tạo bản ghi trùng lặp và trả HTTP 200 OK với bản ghi 'chk-001' hiện có"
+        },
+        {
+          "given": "Người dùng khởi động lại ứng dụng khi đang offline",
+          "when": "Mở lại màn hình Nhật ký",
+          "then": "Toàn bộ chuyến đi và check-in chưa đồng bộ vẫn hiển thị đầy đủ từ SQLite"
+        }
+      ]
+    },
+    {
+      "id": "NFR-004",
+      "title": "Tối ưu tiêu thụ pin khi lưu vết hành trình nền",
+      "description": "Dịch vụ lưu vết hành trình nền (FR-009) SHALL giới hạn mức tiêu thụ pin trung bình <= 5%/giờ trên thiết bị tham chiếu (iPhone 13 iOS 17+, Pixel 6 Android 13+) khi tắt màn hình.",
+      "priority": "P1",
+      "source_refs": ["REQ-008"],
+      "main_flow": [
+        "1. Khi thiết bị đứng yên (speed < 2.0 km/h), dịch vụ nền giãn chu kỳ lấy mẫu GPS từ 15s lên 120s.",
+        "2. Đo mức tiêu thụ pin trong bài test 60 phút trên thiết bị tham chiếu (tắt màn hình, đóng app khác, pin khởi đầu >= 80%)."
+      ],
+      "exception_flows": [
+        "Nếu mức tiêu thụ pin đo được > 5%/giờ hoặc tần suất đánh thức GPS khi đứng yên vẫn là 15s: Đánh dấu kiểm thử FAILED."
+      ],
+      "business_rules": [
+        "BR-NFR-004: Tỷ lệ đánh thức GPS khi đứng yên giảm 8x (120s so với 15s); tiêu thụ pin <= 5%/giờ trên iPhone 13 (iOS 17+) và Pixel 6 (Android 13+) khi tắt màn hình."
+      ],
+      "acceptance_criteria": [
+        {
+          "given": "Chuyến đi đang ACTIVE và thiết bị đứng yên (speed = 0.0 km/h) trong 10 phút",
+          "when": "Theo dõi số lần gọi lấy mẫu GPS",
+          "then": "Dịch vụ nền lấy mẫu theo chu kỳ 120 giây (tối đa 5 lần trong 10 phút)"
+        },
+        {
+          "given": "Thiết bị tham chiếu (iPhone 13 / Pixel 6, pin >= 80%, tắt màn hình, đóng app khác) chạy chuyến đi 60 phút",
+          "when": "Đo lượng pin tiêu hao của tiến trình nền",
+          "then": "Mức tiêu hao pin <= 5%/giờ"
+        }
+      ]
+    }
+  ]
+}

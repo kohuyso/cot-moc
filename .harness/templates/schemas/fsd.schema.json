@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SDLCFunctionalSpecification",
+  "type": "object",
+  "required": [
+    "project_scale",
+    "screens"
+  ],
+  "properties": {
+    "project_scale": {
+      "type": "string",
+      "enum": [
+        "standard",
+        "large",
+        "enterprise"
+      ]
+    },
+    "description": {
+      "type": "string"
+    },
+    "screens": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "screen_id",
+          "title",
+          "module",
+          "fields",
+          "persistence_tables",
+          "event_handlers"
+        ],
+        "properties": {
+          "screen_id": {
+            "type": "string",
+            "pattern": "^SCR-[A-Z0-9_-]+$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 5
+          },
+          "module": {
+            "type": "string"
+          },
+          "fields": {
+            "type": "array",
+            "minItems": 3,
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "label",
+                "component_type",
+                "data_type",
+                "required",
+                "master_data_source",
+                "persistence_target",
+                "validation_rules"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "component_type": {
+                  "type": "string"
+                },
+                "data_type": {
+                  "type": "string"
+                },
+                "required": {
+                  "type": "boolean"
+                },
+                "master_data_source": {
+                  "type": "string"
+                },
+                "persistence_target": {
+                  "type": "string"
+                },
+                "validation_rules": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "persistence_tables": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^tbl_.*$"
+            }
+          },
+          "event_handlers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

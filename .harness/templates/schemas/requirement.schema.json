@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SDLCRequirement",
+  "type": "object",
+  "required": ["id", "title", "description", "priority", "acceptance_criteria"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^(FR|NFR)-[0-9]{3,}$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3
+    },
+    "description": {
+      "type": "string",
+      "minLength": 10
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["P0", "P1", "P2", "P3"]
+    },
+    "business_rules": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["given", "when", "then"],
+        "properties": {
+          "given": { "type": "string" },
+          "when": { "type": "string" },
+          "then": { "type": "string" }
+        }
+      }
+    },
+    "out_of_scope": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["description", "confirmed_by_user"],
+            "properties": {
+              "id": { "type": "string" },
+              "description": { "type": "string" },
+              "confirmed_by_user": { "type": "boolean" },
+              "reason": { "type": "string" }
+            }
+          },
+          { "type": "string" }
+        ]
+      }
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "question", "status"],
+        "properties": {
+          "id": { "type": "string" },
+          "question": { "type": "string" },
+          "owner": { "type": "string" },
+          "status": { "type": "string", "enum": ["OPEN", "RESOLVED"] },
+          "resolution": { "type": "string" }
+        }
+      }
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "description", "confirmed_by_user"],
+        "properties": {
+          "id": { "type": "string" },
+          "description": { "type": "string" },
+          "confirmed_by_user": { "type": "boolean" }
+        }
+      }
+    },
+    "project_scale": {
+      "type": "string",
+      "enum": ["standard", "large", "enterprise"]
+    },
+    "modules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "source_ref": { "type": "string" }
+        }
+      }
+    },
+    "requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "description", "priority", "acceptance_criteria"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^(FR|NFR)-[0-9]{3,}$" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "priority": { "type": "string", "enum": ["P0", "P1", "P2", "P3"] },
+          "business_rules": { "type": "array", "items": { "type": "string" } },
+          "main_flow": { "type": "array", "items": { "type": "string" } },
+          "alternate_flows": { "type": "array", "items": { "type": "string" } },
+          "exception_flows": { "type": "array", "items": { "type": "string" } },
+          "source_refs": { "type": "array", "items": { "type": "string" } },
+          "source_gaps": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["field", "reason"],
+              "properties": {
+                "field": { "type": "string", "enum": ["exception_flows"] },
+                "reason": { "type": "string", "minLength": 1 }
+              }
+            }
+          },
+          "acceptance_criteria": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["given", "when", "then"],
+              "properties": {
+                "given": { "type": "string" },
+                "when": { "type": "string" },
+                "then": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "source_exclusions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "reason"],
+        "properties": {
+          "id": { "type": "string" },
+          "reason": { "type": "string" }
+        }
+      }
+    },
+    "fsd_ref": { "type": "string" },
+    "data_dictionary_ref": { "type": "string" },
+    "integration_matrix_ref": { "type": "string" },
+    "rtm_ref": { "type": "string" },
+    "baseline_review": {
+      "type": "object",
+      "properties": {
+        "status": { "type": "string" },
+        "summary": { "type": "string" },
+        "artifacts_reviewed": { "type": "array", "items": { "type": "string" } },
+        "gaps_identified": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  },
+  "additionalProperties": false
+}

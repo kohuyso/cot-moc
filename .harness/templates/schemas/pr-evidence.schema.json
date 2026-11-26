@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SDLCPrEvidencePack",
+  "type": "object",
+  "required": ["run_id", "feature_branch", "target_branch", "gates_passed", "traceability_complete", "pr_metadata"],
+  "properties": {
+    "run_id": { "type": "string" },
+    "feature_branch": { "type": "string" },
+    "target_branch": { "type": "string" },
+    "gates_passed": { "type": "boolean" },
+    "traceability_complete": { "type": "boolean" },
+    "gates": {
+      "type": "object",
+      "additionalProperties": { "type": "boolean" }
+    },
+    "vcs_diff_summary": {
+      "type": "object",
+      "required": ["files_changed", "insertions", "deletions"],
+      "properties": {
+        "files_changed": { "type": "integer" },
+        "insertions": { "type": "integer" },
+        "deletions": { "type": "integer" }
+      },
+      "additionalProperties": false
+    },
+    "pr_metadata": {
+      "type": "object",
+      "required": ["title", "description"],
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "changelog": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SDLCTraceabilityModel",
+  "type": "object",
+  "required": ["run_id", "traceability"],
+  "properties": {
+    "run_id": { "type": "string" },
+    "generated_at": { "type": "string" },
+    "traceability": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["architecture", "implementation", "tests", "evidence"],
+        "properties": {
+          "title": { "type": "string" },
+          "architecture": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "implementation": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "tests": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "evidence": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

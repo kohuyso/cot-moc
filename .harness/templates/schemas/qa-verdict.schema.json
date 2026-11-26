@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SDLCQAVerdict",
+  "type": "object",
+  "required": ["run_id", "attempt", "verdict", "traceability_satisfied", "issues", "verified_requirements"],
+  "properties": {
+    "run_id": { "type": "string" },
+    "attempt": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 3
+    },
+    "verdict": {
+      "type": "string",
+      "enum": ["APPROVE", "APPROVE_WITH_RISK", "REJECT", "ESCALATE"]
+    },
+    "traceability_satisfied": {
+      "type": "boolean"
+    },
+    "risk_disclosure": {
+      "type": "string"
+    },
+    "e2e_coverage_rate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "browser_console_clean": {
+      "type": "boolean"
+    },
+    "verified_requirements": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["requirement_id", "status", "test_id"],
+        "properties": {
+          "requirement_id": { "type": "string" },
+          "status": {
+            "type": "string",
+            "enum": ["PASS", "FAIL", "BLOCKED", "WAIVED"]
+          },
+          "test_id": { "type": "string" },
+          "evidence_ref": { "type": "string" },
+          "tier": {
+            "type": "string",
+            "enum": ["UNIT", "INTEGRATION", "E2E_UI", "SECURITY", "SMOKE", "PERFORMANCE"]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["issue_id", "severity", "requirement_id", "description", "remediation"],
+        "properties": {
+          "issue_id": { "type": "string" },
+          "severity": {
+            "type": "string",
+            "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
+          },
+          "requirement_id": { "type": "string" },
+          "description": { "type": "string" },
+          "expected": { "type": "string" },
+          "actual": { "type": "string" },
+          "remediation": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
